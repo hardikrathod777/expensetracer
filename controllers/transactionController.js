@@ -10,17 +10,24 @@ exports.getTransactions = async (req, res) => {
     }
 };
 
-// Add a transaction
-exports.addTransaction = async (req, res) => {
-    const { type, category, amount, description, date } = req.body;
-
+exports.getAddTransactionForm = (req, res, next) => {
     try {
-        const newTransaction = new Transaction({ type, category, amount, description, date });
-        await newTransaction.save();
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).send('Server Error');
+      res.render('addTransaction'); // Ensure 'addTransaction' matches the EJS file name
+    } catch (error) {
+      next(error); // Passes any errors to the error-handling middleware
     }
+  };
+
+// Handle adding a new transaction
+exports.addTransaction = async (req, res, next) => {
+  try {
+    const { type, category, amount, description, date } = req.body;
+    const transaction = new Transaction({ type, category, amount, description, date });
+    await transaction.save();
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Edit a transaction
