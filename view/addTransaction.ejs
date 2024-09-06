@@ -4,36 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Transaction</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center"><%= transaction ? 'Edit' : 'Add' %> Transaction</h1>
-        <form action="<%= transaction ? '/edit/' + transaction._id : '/add' %>" method="POST">
-            <div class="mb-3">
-                <label for="type" class="form-label">Type</label>
-                <select class="form-select" id="type" name="type" required>
-                    <option value="Income" <%= transaction && transaction.type === 'Income' ? 'selected' : '' %>>Income</option>
-                    <option value="Expense" <%= transaction && transaction.type === 'Expense' ? 'selected' : '' %>>Expense</option>
+        <h2>Add Transaction</h2>
+        <form action="/add" method="POST">
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select name="type" id="type" class="form-control" required>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <input type="text" class="form-control" id="category" name="category" value="<%= transaction ? transaction.category : '' %>" required>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" name="category" id="category" class="form-control" required>
             </div>
-            <div class="mb-3">
-                <label for="amount" class="form-label">Amount</label>
-                <input type="number" class="form-control" id="amount" name="amount" value="<%= transaction ? transaction.amount : '' %>" required>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" name="amount" id="amount" class="form-control" required>
             </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <input type="text" class="form-control" id="description" name="description" value="<%= transaction ? transaction.description : '' %>">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" class="form-control"></textarea>
             </div>
-            <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="date" name="date" value="<%= transaction ? transaction.date.toISOString().substring(0, 10) : '' %>">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date" class="form-control">
             </div>
-            <button type="submit" class="btn btn-primary"><%= transaction ? 'Update' : 'Add' %> Transaction</button>
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
         </form>
     </div>
 </body>
