@@ -1,3 +1,4 @@
+const transaction = require('../models/transaction');
 const Transaction = require('../models/transaction');
 
 // Get all transactions
@@ -10,13 +11,9 @@ exports.getTransactions = async (req, res) => {
     }
 };
 
-exports.getAddTransactionForm = (req, res, next) => {
-    try {
-      res.render('addTransaction'); // Ensure 'addTransaction' matches the EJS file name
-    } catch (error) {
-      next(error); // Passes any errors to the error-handling middleware
-    }
-  };
+exports.getAddTransactionForm = (req, res) => {
+  res.render('addTransaction'); // Add Transaction page
+};
 
 // Handle adding a new transaction
 exports.addTransaction = async (req, res, next) => {
@@ -30,39 +27,39 @@ exports.addTransaction = async (req, res, next) => {
   }
 };
 
-// Edit a transaction
-exports.editTransaction = async (req, res) => {
-    try {
-        let transaction = await Transaction.findById(req.params.id);
-
-        if (!transaction) return res.status(404).send('Transaction not found');
-
-        const { type, category, amount, description, date } = req.body;
-
-        transaction.type = type;
-        transaction.category = category;
-        transaction.amount = amount;
-        transaction.description = description;
-        transaction.date = date;
-
-        await transaction.save();
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).send('Server Error');
+// Display the form to edit an existing transaction
+exports.getEditTransactionForm = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).send('Transaction not found');
     }
+    res.render('editTransaction', { transaction }); // Pass transaction data to the view
+  } catch (error) {
+    next(error);
+  }
 };
 
-// Delete a transaction
-exports.deleteTransaction = async (req, res) => {
-    try {
-        let transaction = await Transaction.findById(req.params.id);
+// Handle editing an existing transaction
+exports.updateTransaction = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { type, category, amount, description, date } = req.body;
+    await Transaction.findByIdAndUpdate(id, { type, category, amount, description, date });
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
+};
 
-        if (!transaction) return res.status(404).send('Transaction not found');
-
-        await Transaction.findByIdAndRemove(req.params.id);
-
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).send('Server Error');
-    }
+// Handle deleting a transaction
+exports.deleteTransaction = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await Transaction.findByIdAndDelete(id);
+    res.redirect('/');  // Redirect to the homepage or the transactions list after deleting
+  } catch (error) {
+    next(error);
+  }
 };
